@@ -56,16 +56,20 @@ export const updateEmp = async(req,res)=>{
     }
 }
 
-export const deleteEmp  = async(req,res)=>{
-    try{
+export const deleteEmp = async (req, res) => {
+    try {
         const Emp_id = req.params.id;
-        const findData = Employee.findById(Emp_id);
-        
-        await findData.deleteOne();
-        res.status(200).json({Message:"Employee Deleted Successfully"});
-    }
-    catch(error){
+        const findData = await Employee.findById(Emp_id);
+
+        if (!findData) {
+            return res.status(404).send("Id not Found");
+        }
+
+        await Employee.deleteOne({ _id: Emp_id });
+
+        return res.status(200).json({ Message: "Employee Deleted Successfully" });
+    } catch (error) {
         console.log(error);
-        res.status(500).json({Message:"Internal Server Error in Delete Method"});
+        return res.status(500).json({ Message: "Internal Server Error in Delete Method" });
     }
-}
+};
